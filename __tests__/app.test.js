@@ -112,6 +112,22 @@ describe("/api/reviews/:review_id", () => {
         expect(review).toHaveProperty("votes", 7);
       });
   });
+  test("404, returns not found when passed a valid endpoint but the endpoint does not exist", () => {
+    return request(app)
+      .get("/api/reviews/100")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("No review found for review 100");
+      });
+  });
+  test("400, returns bad request when passed an invalid endpoint", () => {
+    return request(app)
+      .get("/api/reviews/notAnId")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad request");
+      });
+  });
 });
 
 afterAll(() => connection.end());

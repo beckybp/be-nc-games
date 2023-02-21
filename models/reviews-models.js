@@ -34,6 +34,13 @@ exports.selectReviewFromId = (reviewId) => {
       [reviewId]
     )
     .then((result) => {
-      return result.rows[0];
+      const review = result.rows[0];
+      if (!review) {
+        return Promise.reject({
+          status: 404,
+          msg: `No review found for review ${reviewId}`,
+        });
+      }
+      return review;
     });
 };

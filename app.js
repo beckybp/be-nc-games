@@ -7,6 +7,8 @@ const {
 const {
   handle500Status,
   handle404BadPath,
+  handleCustomErrors,
+  handlePSQL400Errors,
 } = require("./controllers/error-handling-controller.js");
 
 const app = express();
@@ -18,6 +20,10 @@ app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewFromId);
 
 app.use(handle404BadPath);
+
+app.use(handleCustomErrors);
+
+app.use(handlePSQL400Errors);
 
 app.use(handle500Status);
 
