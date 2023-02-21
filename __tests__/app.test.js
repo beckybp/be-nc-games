@@ -88,4 +88,30 @@ describe("GET /api/reviews", () => {
   });
 });
 
+describe("/api/reviews/:review_id", () => {
+  test("200, responds with a review object based on the review_id parametric endpoint", () => {
+    return request(app)
+      .get("/api/reviews/4")
+      .expect(200)
+      .then((res) => {
+        const { review } = res.body;
+        expect(review).toHaveProperty("review_id", 4);
+        expect(review).toHaveProperty("title", "Dolor reprehenderit");
+        expect(review).toHaveProperty("category", "social deduction");
+        expect(review).toHaveProperty("designer", "Gamey McGameface");
+        expect(review).toHaveProperty("owner", "mallionaire");
+        expect(review).toHaveProperty(
+          "review_body",
+          "Consequat velit occaecat voluptate do. Dolor pariatur fugiat sint et proident ex do consequat est. Nisi minim laboris mollit cupidatat et adipisicing laborum do. Sint sit tempor officia pariatur duis ullamco labore ipsum nisi voluptate nulla eu veniam. Et do ad id dolore id cillum non non culpa. Cillum mollit dolor dolore excepteur aliquip. Cillum aliquip quis aute enim anim ex laborum officia. Aliqua magna elit reprehenderit Lorem elit non laboris irure qui aliquip ad proident. Qui enim mollit Lorem labore eiusmod"
+        );
+        expect(review).toHaveProperty(
+          "review_img_url",
+          "https://images.pexels.com/photos/278918/pexels-photo-278918.jpeg?w=700&h=700"
+        );
+        expect(review).toHaveProperty("created_at", "2021-01-22T11:35:50.936Z");
+        expect(review).toHaveProperty("votes", 7);
+      });
+  });
+});
+
 afterAll(() => connection.end());
