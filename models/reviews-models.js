@@ -16,8 +16,8 @@ exports.selectReviews = () => {
     )
     .then((result) => {
       const reviewArr = result.rows;
-      reviewArr.forEach((reveiw) => {
-        reveiw.comment_count = parseInt(reveiw.comment_count);
+      reviewArr.forEach((review) => {
+        review.comment_count = parseInt(review.comment_count);
       });
       return reviewArr;
     });
