@@ -7,8 +7,19 @@ const testData = require("../db/data/test-data/index.js");
 
 beforeEach(() => seed(testData));
 
+describe("bad paths", () => {
+  test("404, responds with path not found in a unavailable path is requested", () => {
+    return request(app)
+      .get("/bad-path-entered")
+      .expect(404)
+      .then((res) => {
+        const { msg } = res.body;
+        expect(msg).toBe("Path not found");
+      });
+  });
+});
 describe("GET /api/categories", () => {
-  test("status:200, responds with an array of category objects containing slug and description properties", () => {
+  test("200, responds with an array of category objects containing slug and description properties", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
@@ -26,7 +37,7 @@ describe("GET /api/categories", () => {
 });
 
 describe("GET /api/reviews", () => {
-  test("status:200, responds with an array of review objects", () => {
+  test("200, responds with an array of review objects", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -45,7 +56,7 @@ describe("GET /api/reviews", () => {
         });
       });
   });
-  test("status:200, the comment_count property has the total count of all the comments with this review_id", () => {
+  test("200, the comment_count property has the total count of all the comments with this review_id", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -64,7 +75,7 @@ describe("GET /api/reviews", () => {
         });
       });
   });
-  test("status:200, responds with the reviews sorted by date in descending order", () => {
+  test("200, responds with the reviews sorted by date in descending order", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
