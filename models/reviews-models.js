@@ -44,3 +44,19 @@ exports.selectReviewFromId = (reviewId) => {
       return review;
     });
 };
+
+exports.selectCommentsFromReview = (reviewId) => {
+  return db
+    .query(
+      `
+  SELECT *
+  FROM comments
+  WHERE review_id = $1
+  ORDER BY comments.created_at DESC;
+  `,
+      [reviewId]
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};

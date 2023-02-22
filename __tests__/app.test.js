@@ -88,27 +88,7 @@ describe("GET /api/reviews", () => {
   });
 });
 
-// describe("GET /api/reviews/:review_id/comments", () => {
-//   test("200, responds with and array of comments for a given review_id", () => {
-//     return request(app)
-//       .get("/api/reviews/3/comments")
-//       .expect(200)
-//       .then((res) => {
-//         const { reviews } = res.body;
-//         reviews.forEach((review) => {
-//           expect(review).toHaveProperty("comment_id");
-//           expect(review).toHaveProperty("votes");
-//           expect(review).toHaveProperty("created_at");
-//           expect(review).toHaveProperty("author");
-//           expect(review).toHaveProperty("body");
-//           expect(review).toHaveProperty("review_id");
-//         });
-//       });
-//   });
-//   test("200, responds with the most recent comments first", () => {});
-// });
-
-describe("/api/reviews/:review_id", () => {
+describe("GET /api/reviews/:review_id", () => {
   test("200, responds with a review object based on the review_id parametric endpoint", () => {
     return request(app)
       .get("/api/reviews/4")
@@ -146,6 +126,37 @@ describe("/api/reviews/:review_id", () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("GET /api/reviews/:review_id/comments", () => {
+  test("200, responds with and array of comments for a given review_id", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then((res) => {
+        const { comments } = res.body;
+        expect(comments.length).toBe(3);
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id");
+          expect(comment).toHaveProperty("votes");
+          expect(comment).toHaveProperty("created_at");
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("body");
+          expect(comment).toHaveProperty("review_id");
+        });
+      });
+  });
+  test("200, responds with the most recent comments first", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then((res) => {
+        const { comments } = res.body;
+        expect(comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
       });
   });
 });
