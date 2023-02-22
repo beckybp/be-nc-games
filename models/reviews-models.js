@@ -22,3 +22,25 @@ exports.selectReviews = () => {
       return reviewArr;
     });
 };
+
+exports.selectReviewFromId = (reviewId) => {
+  return db
+    .query(
+      `
+  SELECT *
+  FROM reviews
+  WHERE review_id = $1
+  `,
+      [reviewId]
+    )
+    .then((result) => {
+      const review = result.rows[0];
+      if (!review) {
+        return Promise.reject({
+          status: 404,
+          msg: `No review found for review ${reviewId}`,
+        });
+      }
+      return review;
+    });
+};
