@@ -1,6 +1,7 @@
 const {
   selectReviews,
   selectReviewFromId,
+  createComment,
   selectCommentsFromReview,
   updateVoteCount,
 } = require("../models/reviews-models.js");
