@@ -175,15 +175,15 @@ describe("GET /api/reviews/:review_id/comments", () => {
         expect(res.body.msg).toBe("No review found for review 1000");
       });
   });
-  // test("200, responds with an empty array of comments when passed a valid review_id that exists that has no comments", () => {
-  //   return request(app)
-  //     .get("/api/reviews/5/comments")
-  //     .expect(200)
-  //     .then((res) => {
-  //       const { comments } = res.body;
-  //       expect(comments.length).toBe(0);
-  //     });
-  // });
+  test("200, responds with an empty array of comments when passed a valid review_id that exists that has no comments", () => {
+    return request(app)
+      .get("/api/reviews/5/comments")
+      .expect(200)
+      .then((res) => {
+        const { comments } = res.body;
+        expect(comments.length).toBe(0);
+      });
+  });
 });
 
 afterAll(() => connection.end());
