@@ -44,3 +44,37 @@ exports.selectReviewFromId = (reviewId) => {
       return review;
     });
 };
+
+exports.selectCommentsFromReview = (reviewId) => {
+  return db
+    .query(
+      `
+      SELECT *
+      FROM reviews
+      WHERE review_id = $1;
+      `,
+      [reviewId]
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `No review found for review ${reviewId}`,
+        });
+      } else {
+        return db
+          .query(
+            `
+            SELECT *
+            FROM comments
+            WHERE review_id = $1
+            ORDER BY comments.created_at DESC;
+            `,
+            [reviewId]
+          )
+          .then((res) => {
+            return res.rows;
+          });
+      }
+    });
+};

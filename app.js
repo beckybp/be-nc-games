@@ -3,6 +3,7 @@ const { getCategories } = require("./controllers/categories-conroller.js");
 const {
   getReviews,
   getReviewFromId,
+  getCommentsFromReview,
 } = require("./controllers/reviews-controller.js");
 const {
   handle500Status,
@@ -18,6 +19,8 @@ app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
 
 app.get("/api/reviews/:review_id", getReviewFromId);
+
+app.get("/api/reviews/:review_id/comments", getCommentsFromReview);
 
 app.use(handle404BadPath);
 
