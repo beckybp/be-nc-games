@@ -130,6 +130,104 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
+describe("POST /api/reviews/:review_id/comments", () => {
+  test("201, responds with the posted comment", () => {
+    const commentToAdd = { username: "mallionaire", body: "Great game!" };
+    return request(app)
+      .post("/api/reviews/4/comments")
+      .send(commentToAdd)
+      .expect(201)
+      .then((res) => {
+        const { comment } = res.body;
+        expect(comment).toHaveProperty("comment_id");
+        expect(comment).toHaveProperty("body", "Great game!");
+        expect(comment).toHaveProperty("votes", 0);
+        expect(comment).toHaveProperty("author", "mallionaire");
+        expect(comment).toHaveProperty("review_id", 4);
+        expect(comment).toHaveProperty("created_at");
+      });
+  });
+  test("201, responds with the posted comment, ignores unnecessary property", () => {
+    const commentToAdd = {
+      username: "mallionaire",
+      body: "Great game!",
+      votes: 50,
+    };
+    return request(app)
+      .post("/api/reviews/4/comments")
+      .send(commentToAdd)
+      .expect(201)
+      .then((res) => {
+        const { comment } = res.body;
+        expect(comment).toHaveProperty("comment_id");
+        expect(comment).toHaveProperty("body", "Great game!");
+        expect(comment).toHaveProperty("votes", 0);
+        expect(comment).toHaveProperty("author", "mallionaire");
+        expect(comment).toHaveProperty("review_id", 4);
+        expect(comment).toHaveProperty("created_at");
+      });
+  });
+  test("400, responds with bad request when passed an incomplete comment input", () => {
+    const commentToAdd = { username: "mallionaire" };
+    return request(app)
+      .post("/api/reviews/4/comments")
+      .send(commentToAdd)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad request - incomplete information");
+      });
+  });
+  test("400, responds with bad request when passed an incomplete comment input", () => {
+    const commentToAdd = { body: "Great game!" };
+    return request(app)
+      .post("/api/reviews/4/comments")
+      .send(commentToAdd)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad request - incomplete information");
+      });
+  });
+  test("404, responds not found when a username does not exist", () => {
+    const commentToAdd = {
+      username: "non-existent-username",
+      body: "Great game!",
+    };
+    return request(app)
+      .post("/api/reviews/4/comments")
+      .send(commentToAdd)
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Not found");
+      });
+  });
+  test("400, responds with bad request when passed an invalid review_id", () => {
+    const commentToAdd = {
+      username: "mallionaire",
+      body: "Great game!",
+    };
+    return request(app)
+      .post("/api/reviews/not-a-number/comments")
+      .send(commentToAdd)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad request");
+      });
+  });
+  test("404, responds with not found when passed a valid but non existant review_id", () => {
+    const commentToAdd = {
+      username: "mallionaire",
+      body: "Great game!",
+    };
+    return request(app)
+      .post("/api/reviews/1000/comments")
+      .send(commentToAdd)
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Not found");
+      });
+  });
+});
+
 describe("GET /api/reviews/:review_id/comments", () => {
   test("200, responds with an array of comments for a given review_id", () => {
     return request(app)
