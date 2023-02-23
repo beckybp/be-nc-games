@@ -1,6 +1,7 @@
 const {
   selectReviews,
   selectReviewFromId,
+  createComment,
 } = require("../models/reviews-models.js");
 
 exports.getReviews = (req, res, next) => {
