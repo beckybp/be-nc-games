@@ -79,11 +79,11 @@ exports.selectCommentsFromReview = (reviewId) => {
     });
 };
 
-exports.patchComment = (review_id, inc_votes) => {
+exports.updateVoteCount = (review_id, inc_votes) => {
   return db
     .query(
       `
-  UPDATE comments
+  UPDATE reviews
   SET votes = votes + $1
   WHERE review_id = $2
   RETURNING *;
@@ -91,6 +91,7 @@ exports.patchComment = (review_id, inc_votes) => {
       [review_id, inc_votes]
     )
     .then((res) => {
+      console.log(res);
       return res.rows[0];
     });
 };

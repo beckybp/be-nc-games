@@ -4,7 +4,7 @@ const {
   getReviews,
   getReviewFromId,
   getCommentsFromReview,
-  patchComment,
+  patchReview,
 } = require("./controllers/reviews-controller.js");
 const {
   handle500Status,
@@ -14,6 +14,7 @@ const {
 } = require("./controllers/error-handling-controller.js");
 
 const app = express();
+app.use(express.json());
 
 app.get("/api/categories", getCategories);
 
@@ -23,7 +24,7 @@ app.get("/api/reviews/:review_id", getReviewFromId);
 
 app.get("/api/reviews/:review_id/comments", getCommentsFromReview);
 
-app.patch("/api/reviews/:review_id", patchComment);
+app.patch("/api/reviews/:review_id", patchReview);
 
 app.use(handle404BadPath);
 

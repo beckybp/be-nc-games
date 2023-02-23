@@ -186,28 +186,29 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
-// describe("PATCH /api/reviews/:review_id", () => {
-//   test("200, responds with an updated review", () => {
-//     const voteInput = { inc_votes: 1 };
-//     return request(app)
-//       .patch("/api/reviews/1")
-//       .send(voteInput)
-//       .expect(200)
-//       .then((res) => {
-//         const { comment } = res.body;
-//         expect(comment).toHaveProperty("title", "Agricola");
-//         expect(comment).toHaveProperty("designer", "Uwe Rosenberg");
-//         expect(comment).toHaveProperty("owner", "mallionaire");
-//         expect(comment).toHaveProperty(
-//           "review_img_url",
-//           "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700"
-//         );
-//         expect(comment).toHaveProperty("review_body", "Farmyard fun!");
-//         expect(comment).toHaveProperty("category", "euro game");
-//         expect(comment).toHaveProperty("created_at");
-//         expect(comment).toHaveProperty("votes", 2);
-//       });
-//   });
-// });
+describe("PATCH /api/reviews/:review_id", () => {
+  test("200, responds with an updated review", () => {
+    const voteInput = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(voteInput)
+      .expect(200)
+      .then((res) => {
+        const { review } = res.body;
+        expect(review).toHaveProperty("review_id", 1);
+        expect(review).toHaveProperty("title", "Agricola");
+        expect(review).toHaveProperty("designer", "Uwe Rosenberg");
+        expect(review).toHaveProperty("owner", "mallionaire");
+        expect(review).toHaveProperty(
+          "review_img_url",
+          "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700"
+        );
+        expect(review).toHaveProperty("review_body", "Farmyard fun!");
+        expect(review).toHaveProperty("category", "euro game");
+        expect(review).toHaveProperty("created_at");
+        expect(review).toHaveProperty("votes", 2);
+      });
+  });
+});
 
 afterAll(() => connection.end());
