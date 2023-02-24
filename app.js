@@ -12,6 +12,7 @@ const {
   handlePSQL400Errors,
 } = require("./controllers/error-handling-controller.js");
 const { postCommentOnReview } = require("./controllers/comments-controller.js");
+const { getUsers } = require("./controllers/users-controller");
 
 const app = express();
 app.use(express.json());
@@ -25,6 +26,8 @@ app.get("/api/reviews/:review_id", getReviewFromId);
 app.post("/api/reviews/:review_id/comments", postCommentOnReview);
 
 app.get("/api/reviews/:review_id/comments", getCommentsFromReview);
+
+app.get("/api/users", getUsers);
 
 app.use(handle404BadPath);
 
