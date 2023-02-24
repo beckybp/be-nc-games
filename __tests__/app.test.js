@@ -285,8 +285,8 @@ describe("GET /api/reviews/:review_id/comments", () => {
 });
 
 describe("PATCH /api/reviews/:review_id", () => {
-  test("200, responds with an updated review", () => {
-    const voteInput = { inc_votes: 1 };
+  test("200, responds with an updated review with an updated vote count", () => {
+    const voteInput = { inc_votes: 5 };
     return request(app)
       .patch("/api/reviews/1")
       .send(voteInput)
@@ -304,9 +304,109 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(review).toHaveProperty("review_body", "Farmyard fun!");
         expect(review).toHaveProperty("category", "euro game");
         expect(review).toHaveProperty("created_at");
-        expect(review).toHaveProperty("votes", 2);
+        expect(review).toHaveProperty("votes", 6);
+      });
+  });
+  test("200, responds with an updated review with an updated negative vote count", () => {
+    const voteInput = { inc_votes: -100 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(voteInput)
+      .expect(200)
+      .then((res) => {
+        const { review } = res.body;
+        expect(review).toHaveProperty("review_id", 2);
+        expect(review).toHaveProperty("title", "Jenga");
+        expect(review).toHaveProperty("designer", "Leslie Scott");
+        expect(review).toHaveProperty("owner", "philippaclaire9");
+        expect(review).toHaveProperty(
+          "review_img_url",
+          "https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700"
+        );
+        expect(review).toHaveProperty(
+          "review_body",
+          "Fiddly fun for all the family"
+        );
+        expect(review).toHaveProperty("category", "dexterity");
+        expect(review).toHaveProperty("created_at");
+        expect(review).toHaveProperty("votes", -95);
+      });
+  });
+  test("200, responds with an updated review and ignores any unnecessary properties", () => {
+    const voteInput = { inc_votes: 7, review_id: 7, title: "Jenga" };
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(voteInput)
+      .expect(200)
+      .then((res) => {
+        const { review } = res.body;
+        expect(review).toHaveProperty("review_id", 1);
+        expect(review).toHaveProperty("title", "Agricola");
+        expect(review).toHaveProperty("designer", "Uwe Rosenberg");
+        expect(review).toHaveProperty("owner", "mallionaire");
+        expect(review).toHaveProperty(
+          "review_img_url",
+          "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700"
+        );
+        expect(review).toHaveProperty("review_body", "Farmyard fun!");
+        expect(review).toHaveProperty("category", "euro game");
+        expect(review).toHaveProperty("created_at");
+        expect(review).toHaveProperty("votes", 8);
+      });
+  });
+  test("200, responds with the unchanged review when input information is not provided", () => {
+    const voteInput = {};
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(voteInput)
+      .expect(200)
+      .then((res) => {
+        const { review } = res.body;
+        expect(review).toHaveProperty("review_id", 2);
+        expect(review).toHaveProperty("title", "Jenga");
+        expect(review).toHaveProperty("designer", "Leslie Scott");
+        expect(review).toHaveProperty("owner", "philippaclaire9");
+        expect(review).toHaveProperty(
+          "review_img_url",
+          "https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700"
+        );
+        expect(review).toHaveProperty(
+          "review_body",
+          "Fiddly fun for all the family"
+        );
+        expect(review).toHaveProperty("category", "dexterity");
+        expect(review).toHaveProperty("created_at");
+        expect(review).toHaveProperty("votes", 5);
+      });
+  });
+  test("400, responds with bad request when passed an invalid review_id", () => {
+    return request(app)
+      .patch("/api/reviews/not-a-path")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad request");
+      });
+  });
+  test("404, responds with not found when passed a valid review_id but the review_id does not exist", () => {
+    return request(app)
+      .patch("/api/reviews/1000")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("No review found for review 1000");
+      });
+  });
+  test("400, responds with bad request when passed the wrong data type", () => {
+    const voteInput = { inc_votes: "not-a-number" };
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(voteInput)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad request");
       });
   });
 });
+
+//200, giving the wrong key
 
 afterAll(() => connection.end());

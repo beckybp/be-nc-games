@@ -80,18 +80,27 @@ exports.selectCommentsFromReview = (reviewId) => {
 };
 
 exports.updateVoteCount = (review_id, inc_votes) => {
+  if (inc_votes === undefined) {
+    inc_votes = 0;
+  }
   return db
     .query(
       `
   UPDATE reviews
-  SET votes = votes + $1
-  WHERE review_id = $2
+  SET votes = votes + $2
+  WHERE review_id = $1
   RETURNING *;
   `,
       [review_id, inc_votes]
     )
     .then((res) => {
-      console.log(res);
-      return res.rows[0];
+      const review = res.rows[0];
+      if (review === undefined) {
+        return Promise.reject({
+          status: 404,
+          msg: `No review found for review ${review_id}`,
+        });
+      }
+      return review;
     });
 };
