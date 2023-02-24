@@ -407,6 +407,4 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
 });
 
-//200, giving the wrong key
-
 afterAll(() => connection.end());
