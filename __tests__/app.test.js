@@ -293,14 +293,15 @@ describe("GET /api/users", () => {
         const { users } = res.body;
         expect(users.length).toBe(4);
         users.forEach((user) => {
-          expect(user).toHaveProperty("username");
-          expect(user).toHaveProperty("name");
-          expect(user).toHaveProperty("avatar_url");
-          expect(user).toMatchObject({
-            username: expect.any(String),
-            name: expect.any(String),
-            avatar_url: expect.any(String),
-          });
+          expect(user).toHaveProperty("username", expect.any(String));
+          expect(user).toHaveProperty("name", expect.any(String));
+          expect(user).toHaveProperty("avatar_url", expect.any(String));
+        });
+        expect(users[1]).toMatchObject({
+          username: "philippaclaire9",
+          name: "philippa",
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
         });
       });
   });
