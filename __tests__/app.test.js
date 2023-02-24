@@ -284,6 +284,29 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
+describe("GET /api/users", () => {
+  test("200, responds with an array of all of the user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        const { users } = res.body;
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
+          expect(user).toHaveProperty("username", expect.any(String));
+          expect(user).toHaveProperty("name", expect.any(String));
+          expect(user).toHaveProperty("avatar_url", expect.any(String));
+        });
+        expect(users[1]).toMatchObject({
+          username: "philippaclaire9",
+          name: "philippa",
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+        });
+      });
+  });
+});
+
 describe("PATCH /api/reviews/:review_id", () => {
   test("200, responds with an updated review with an updated vote count", () => {
     const voteInput = { inc_votes: 5 };
