@@ -2,35 +2,76 @@ const pg = require("pg");
 const format = require("pg-format");
 const db = require("../db/connection.js");
 
-exports.selectReviews = () => {
+checkCategoryExists = (category) => {
   return db
     .query(
       `
-      SELECT reviews.*, COUNT(comments.review_id) AS comment_count
-      FROM reviews
-      LEFT JOIN comments
-      ON reviews.review_id = comments.review_id
-      GROUP BY reviews.review_id
-      ORDER BY reviews.created_at DESC;
-      `
+      SELECT *
+      FROM categories
+      WHERE slug = $1
+      `,
+      [category]
     )
     .then((result) => {
-      const reviewArr = result.rows;
-      reviewArr.forEach((review) => {
-        review.comment_count = parseInt(review.comment_count);
-      });
-      return reviewArr;
+      const categories = result.rows;
+      if (categories.length === 0) {
+        return Promise.reject({
+          status: 400,
+          msg: `No review found`,
+        });
+      }
+      return [];
     });
+};
+
+exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
+  let queryStr = `
+  SELECT reviews.*, COUNT(comments.review_id)::INT AS comment_count
+  FROM reviews
+  LEFT JOIN comments
+  ON reviews.review_id = comments.review_id
+  `;
+  const queryParams = [];
+  if (category) {
+    queryStr += ` WHERE category = $1`;
+    queryParams.push(category);
+  }
+  if (
+    ![
+      "title",
+      "designer",
+      "owner",
+      "review_body",
+      "category",
+      "created_at",
+      "votes",
+    ].includes(sort_by)
+  ) {
+    return Promise.reject({ status: 400, msg: "Invalid sort query" });
+  }
+  if (!["asc", "desc"].includes(order)) {
+    return Promise.reject({ status: 400, msg: "Invalid order query" });
+  } else {
+    queryStr += ` GROUP BY reviews.review_id
+    ORDER BY ${sort_by} ${order}`;
+  }
+  return db.query(queryStr, queryParams).then((result) => {
+    const reviewArr = result.rows;
+    if (reviewArr.length === 0 && category) {
+      return checkCategoryExists(category);
+    }
+    return reviewArr;
+  });
 };
 
 exports.selectReviewFromId = (reviewId) => {
   return db
     .query(
       `
-  SELECT *
-  FROM reviews
-  WHERE review_id = $1
-  `,
+      SELECT *
+      FROM reviews
+      WHERE review_id = $1
+      `,
       [reviewId]
     )
     .then((result) => {
