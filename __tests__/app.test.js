@@ -18,6 +18,7 @@ describe("bad paths", () => {
       });
   });
 });
+
 describe("GET /api/categories", () => {
   test("200, responds with an array of category objects containing slug and description properties", () => {
     return request(app)
@@ -43,6 +44,10 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then((res) => {
         const { reviews } = res.body;
+        expect(reviews.length).toBe(13);
+        expect(reviews).toBeSortedBy("created_at", {
+          descending: true,
+        });
         reviews.forEach((review) => {
           expect(review).toHaveProperty("owner");
           expect(review).toHaveProperty("title");
@@ -84,6 +89,87 @@ describe("GET /api/reviews", () => {
         expect(reviews).toBeSortedBy("created_at", {
           descending: true,
         });
+      });
+  });
+  test("200, accepts a category query and responds with the reviews within that category", () => {
+    return request(app)
+      .get("/api/reviews?category=social deduction")
+      .expect(200)
+      .then((res) => {
+        const { reviews } = res.body;
+        expect(reviews.length).toBe(11);
+        reviews.forEach((review) => {
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("review_body", expect.any(String));
+          expect(review).toHaveProperty("category", "social deduction");
+          expect(review).toHaveProperty("created_at");
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("comment_count", expect.any(Number));
+        });
+      });
+  });
+  test("200, responds with an empty array when queried with a category that exists but has no reviews", () => {
+    return request(app)
+      .get("/api/reviews?category=children's games")
+      .expect(200)
+      .then((res) => {
+        const { reviews } = res.body;
+        expect(reviews.length).toBe(0);
+      });
+  });
+  test("200, accepts a sort_by query and sorts the reviews by any valid column, order is descending as default", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=owner")
+      .expect(200)
+      .then((res) => {
+        const { reviews } = res.body;
+        expect(reviews.length).toBe(13);
+        expect(reviews).toBeSortedBy("owner", {
+          descending: true,
+        });
+      });
+  });
+  test("200, accepts a order query and orders the reviews accordingly, sorts by date as default", () => {
+    return request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200)
+      .then((res) => {
+        const { reviews } = res.body;
+        expect(reviews.length).toBe(13);
+        expect(reviews).toBeSortedBy("created_at", {
+          descending: false,
+        });
+      });
+  });
+  test("200, accepts a sort_by, order and category query and arranges the data accordingly", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=owner&order=asc&category=social deduction")
+      .expect(200)
+      .then((res) => {
+        const { reviews } = res.body;
+        expect(reviews.length).toBe(11);
+        expect(reviews).toBeSortedBy("owner", {
+          descending: false,
+        });
+      });
+  });
+  test("400, responds with error when passed an invalid sort query", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=date")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid sort query");
+      });
+  });
+  test("400, responds with bad request when queried with a category that is not in the database", () => {
+    return request(app)
+      .get("/api/reviews?category=not-a-category")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("No review found");
       });
   });
 });
