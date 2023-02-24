@@ -4,6 +4,7 @@ const {
   getReviews,
   getReviewFromId,
   getCommentsFromReview,
+  patchReview,
 } = require("./controllers/reviews-controller.js");
 const {
   handle500Status,
@@ -28,6 +29,8 @@ app.post("/api/reviews/:review_id/comments", postCommentOnReview);
 app.get("/api/reviews/:review_id/comments", getCommentsFromReview);
 
 app.get("/api/users", getUsers);
+
+app.patch("/api/reviews/:review_id", patchReview);
 
 app.use(handle404BadPath);
 
