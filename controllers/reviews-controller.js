@@ -3,7 +3,6 @@ const {
   selectReviewFromId,
   selectCommentsFromReview,
   updateVoteCount,
-  checkCategoryExists,
 } = require("../models/reviews-models.js");
 
 exports.getReviews = (req, res, next) => {

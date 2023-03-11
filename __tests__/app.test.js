@@ -196,6 +196,17 @@ describe("GET /api/reviews/:review_id", () => {
         );
         expect(review).toHaveProperty("created_at", "2021-01-22T11:35:50.936Z");
         expect(review).toHaveProperty("votes", 7);
+        expect(review).toHaveProperty("comment_count", 0);
+      });
+  });
+  test("200, responds with a review object based on the review_id parametric endpoint, includes a comment count", () => {
+    return request(app)
+      .get("/api/reviews/3")
+      .expect(200)
+      .then((res) => {
+        const { review } = res.body;
+        console.log(review);
+        expect(review).toHaveProperty("comment_count", 3);
       });
   });
   test("404, returns not found when passed a valid endpoint but the endpoint does not exist", () => {
