@@ -68,9 +68,11 @@ exports.selectReviewFromId = (reviewId) => {
   return db
     .query(
       `
-      SELECT *
+      SELECT reviews.*, COUNT(comments.review_id)::INT AS comment_count
       FROM reviews
-      WHERE review_id = $1
+      LEFT JOIN comments ON reviews.review_id = comments.review_id
+      WHERE reviews.review_id = $1
+      GROUP BY reviews.review_id;
       `,
       [reviewId]
     )
