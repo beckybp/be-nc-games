@@ -18,3 +18,13 @@ exports.createComment = (username, body, reviewId) => {
       return res.rows[0];
     });
 };
+
+exports.removeComment = (reviewId) => {
+  return db.query(
+    `
+    DELETE FROM comments
+    WHERE review_id = $1
+    `,
+    [reviewId]
+  );
+};

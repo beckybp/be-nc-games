@@ -205,7 +205,6 @@ describe("GET /api/reviews/:review_id", () => {
       .expect(200)
       .then((res) => {
         const { review } = res.body;
-        console.log(review);
         expect(review).toHaveProperty("comment_count", 3);
       });
   });
@@ -525,6 +524,18 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(res.body.msg).toBe("Bad request");
       });
   });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204, responds with a status 204 and no content", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  // test("404, responds with not found when passed a valid comment_id but the comment_id does not exist", () => {
+  //   return request(app).delete("/api/comments/1000").expect(404);
+  // });
+  // test("400, responds with bad request when passed the wrong data type", () => {
+  //   return request(app).delete("/api/comments/not-a-number").expect(400);
+  // });
 });
 
 afterAll(() => connection.end());
