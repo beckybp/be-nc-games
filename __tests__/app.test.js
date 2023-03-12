@@ -205,7 +205,6 @@ describe("GET /api/reviews/:review_id", () => {
       .expect(200)
       .then((res) => {
         const { review } = res.body;
-        console.log(review);
         expect(review).toHaveProperty("comment_count", 3);
       });
   });
