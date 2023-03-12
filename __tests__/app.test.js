@@ -528,7 +528,13 @@ describe("PATCH /api/reviews/:review_id", () => {
 
 describe("DELETE /api/comments/:comment_id", () => {
   test("204, responds with a status 204 and no content", () => {
-    return request(app).delete("/api/comments/1").expect(204);
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then((res) => {
+        console.log(res.body);
+        expect(res.body.data).toBe(undefined);
+      });
   });
   // test("404, responds with not found when passed a valid comment_id but the comment_id does not exist", () => {
   //   return request(app).delete("/api/comments/1000").expect(404);
