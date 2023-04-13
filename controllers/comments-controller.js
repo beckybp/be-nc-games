@@ -1,6 +1,7 @@
 const {
   createComment,
   removeComment,
+  checkCommentExists,
 } = require("../models/comments-models.js");
 
 exports.postCommentOnReview = (req, res, next) => {
@@ -16,8 +17,8 @@ exports.postCommentOnReview = (req, res, next) => {
 };
 
 exports.deleteComment = (req, res, next) => {
-  const reviewId = req.params.review_id;
-  removeComment(reviewId)
+  const commentId = req.params.comment_id;
+  Promise.all([checkCommentExists(commentId), removeComment(commentId)])
     .then(() => {
       res.status(204).send();
     })
