@@ -38,9 +38,9 @@ app.get("/api/users", getUsers);
 
 app.patch("/api/reviews/:review_id", patchReview);
 
-app.get("/api", getApi);
-
 app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get("/api", getApi);
 
 app.use(handle404BadPath);
 
