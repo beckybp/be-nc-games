@@ -554,4 +554,151 @@ describe("DELETE /api/comments/:comment_id", () => {
   });
 });
 
+describe("GET /api", () => {
+  test("responds with JSON of all endpoints", () => {
+    return request(app)
+      .get("/api")
+      .then((res) => {
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+          "GET /api": {
+            description:
+              "serves up a json representation of all the available endpoints of the api",
+          },
+          "GET /api/categories": {
+            description: "serves an array of all categories",
+            exampleResponse: {
+              categories: [
+                {
+                  description:
+                    "Players attempt to uncover each other's hidden role",
+                  slug: "Social deduction",
+                },
+              ],
+            },
+          },
+          "GET /api/reviews": {
+            description:
+              "serves an array of all review objects, displays all reviews if category value is omitted, sorts by any valid column (defaults to date), order can be set to asc or desc (defaults to desc)",
+            queries: ["category", "sort_by", "order"],
+            exampleResponse: {
+              reviews: [
+                {
+                  review_id: 13,
+                  title: "Kerplunk; Don't lose your marbles",
+                  category: "dexterity",
+                  designer: "Avery Wunzboogerz",
+                  owner: "tickle122",
+                  review_body:
+                    "Don't underestimate the tension and supsense that can be brought on with a round of Kerplunk! You'll feel the rush and thrill of not disturbing the stack of marbles, and probably utter curse words when you draw the wrong straw. Fanily friendly, and not just for kids! ",
+                  review_img_url:
+                    "https://images.pexels.com/photos/411207/pexels-photo-411207.jpeg?w=700&h=700",
+                  created_at: "2021-01-25T11:16:54.963Z",
+                  votes: -14,
+                  comment_count: 72,
+                },
+              ],
+            },
+          },
+          "GET /api/reviews/:review_id": {
+            description:
+              "serves a review object based on the parametric endpoint",
+            exampleResponse: {
+              review: {
+                review_id: 12,
+                title: "Occaecat consequat officia in quis commodo.",
+                category: "roll-and-write",
+                designer: "Ollie Tabooger",
+                owner: "happyamy2016",
+                review_body:
+                  "Fugiat fugiat enim officia laborum quis. Aliquip laboris non nulla nostrud magna exercitation in ullamco aute laborum cillum nisi sint. Culpa excepteur aute cillum minim magna fugiat culpa adipisicing eiusmod laborum ipsum fugiat quis. Mollit consectetur amet sunt ex amet tempor magna consequat dolore cillum adipisicing. Proident est sunt amet ipsum magna proident fugiat deserunt mollit officia magna ea pariatur. Ullamco proident in nostrud pariatur. Minim consequat pariatur id pariatur adipisicing.",
+                review_img_url:
+                  "https://images.pexels.com/photos/6333934/pexels-photo-6333934.jpeg?w=700&h=700",
+                created_at: "2020-09-13T15:19:28.077Z",
+                votes: 8,
+                comment_count: 1,
+              },
+            },
+          },
+          "GET /api/reviews/:review_id/comments": {
+            description:
+              "serves an array of comments based on the selected review",
+            exampleResponse: {
+              comments: [
+                {
+                  comment_id: 19,
+                  body: "Quis duis mollit ad enim deserunt.",
+                  review_id: 3,
+                  author: "jessjelly",
+                  votes: 3,
+                  created_at: "2021-03-27T19:48:58.110Z",
+                },
+                {
+                  comment_id: 20,
+                  body: "Laboris nostrud ea ex occaecat aute quis consectetur anim.",
+                  review_id: 3,
+                  author: "cooljmessy",
+                  votes: 17,
+                  created_at: "2021-03-27T14:15:38.110Z",
+                },
+              ],
+            },
+          },
+          "POST /api/reviews/:review_id/comments": {
+            description: "creates a new comment object",
+            exampleRequest: { username: "mallionaire", body: "Great game!" },
+            exampleResponse: {
+              comment: {
+                comment_id: 1,
+                body: "Great game!",
+                votes: 0,
+                author: "mallionaire",
+                review_id: 4,
+                created_at: "2020-09-13T15:19:28.077Z",
+              },
+            },
+          },
+          "PATCH /api/reviews/:review_id": {
+            description:
+              "increments or decrements the vote count of a review by the specified value",
+            exampleRequest: { inc_votes: 5 },
+            exampleResponse: {
+              review: {
+                review_id: 3,
+                title: "Karma Karma Chameleon",
+                category: "hidden-roles",
+                designer: "Rikki Tahta",
+                owner: "happyamy2016",
+                review_body:
+                  "Try to trick your friends. If you find yourself being dealt the Chamelean card then the aim of the game is simple; blend in... Meanwhile the other players aim to be as vague as they can to not give the game away ",
+                review_img_url:
+                  "https://images.pexels.com/photos/45868/chameleon-reptile-lizard-green-45868.jpeg?w=700&h=700",
+                created_at: "2021-01-18T10:01:42.151Z",
+                votes: 5,
+                comment_count: 5,
+              },
+            },
+          },
+          "GET /api/users": {
+            description: "serves an array of all users",
+            exampleResponse: {
+              users: [
+                {
+                  username: "tickle122",
+                  name: "Tom Tickle",
+                  avatar_url:
+                    "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953",
+                },
+              ],
+            },
+          },
+          "DELETE /api/comments/:comment_id": {
+            description: "deletes the given comment by comment id",
+            exampleResponse: {},
+          },
+        });
+      });
+  });
+});
+
 afterAll(() => connection.end());

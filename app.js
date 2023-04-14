@@ -13,6 +13,7 @@ const {
   handleCustomErrors,
   handlePSQL400Errors,
 } = require("./controllers/error-handling-controller.js");
+const { getApi } = require("./controllers/api-controller.js");
 const {
   postCommentOnReview,
   deleteComment,
@@ -38,6 +39,8 @@ app.get("/api/users", getUsers);
 app.patch("/api/reviews/:review_id", patchReview);
 
 app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get("/api", getApi);
 
 app.use(handle404BadPath);
 
