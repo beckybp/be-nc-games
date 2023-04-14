@@ -573,4 +573,32 @@ describe("PATCH /api/reviews/:review_id", () => {
 // });
 // });
 
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204, responds with a status 204 and no content", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then((res) => {
+        expect(res.body).toEqual({});
+        return request(app).get("/api/comments/1").expect(404);
+      });
+  });
+  test("404, responds with not found when passed a valid comment_id but the comment_id does not exist", () => {
+    return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("No comment found for comment 1000");
+      });
+  });
+  test("400, responds with bad request when passed the wrong data type", () => {
+    return request(app)
+      .delete("/api/comments/not-a-number")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad request");
+      });
+  });
+});
+
 afterAll(() => connection.end());

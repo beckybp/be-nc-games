@@ -13,8 +13,11 @@ const {
   handleCustomErrors,
   handlePSQL400Errors,
 } = require("./controllers/error-handling-controller.js");
-const { postCommentOnReview } = require("./controllers/comments-controller.js");
 const { getApi } = require("./controllers/api-controller.js");
+const {
+  postCommentOnReview,
+  deleteComment,
+} = require("./controllers/comments-controller.js");
 const { getUsers } = require("./controllers/users-controller");
 
 const app = express();
@@ -36,6 +39,8 @@ app.get("/api/users", getUsers);
 app.patch("/api/reviews/:review_id", patchReview);
 
 app.get("/api", getApi);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.use(handle404BadPath);
 
