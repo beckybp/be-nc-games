@@ -29,7 +29,7 @@ To create your own copy of this repo, follow the steps below:
 1. Clone the repo: `git clone https://github.com/beckybp/be-nc-games.git`
 2. `cd` into the repo
 3. Install the dependencies: `npm install`
-4. To seed the local database: `npm seed`
+4. To seed the local database: `npm run seed`
 5. To run tests: `npm test`
 
 ## How to connect to the test and development databases
