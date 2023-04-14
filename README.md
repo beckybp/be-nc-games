@@ -1,6 +1,6 @@
-# Northcoders House of Games API
+# Games Review API
 
-## Connecting to the test and development databases
+## How to connect to the test and development databases
 
 The .env files have been added to the .gitignore file. In order to connect to the two databases locally you will need to create the following 2 files:
 
