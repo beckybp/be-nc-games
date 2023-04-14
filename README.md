@@ -2,7 +2,7 @@
 
 ## Project overview
 
-A solo project to create a fully tested, RESTful API for a games review website. The API holda This project provides information to the front-end, which can be found here: https://github.com/beckybp/fe-nc-games.
+A solo project to create a fully tested, RESTful API for a games review website. This project provides information to the front-end, which can be found here: https://github.com/beckybp/fe-nc-games.
 
 ## Hosted version
 
